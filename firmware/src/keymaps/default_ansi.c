@@ -22,7 +22,7 @@
 #define STARTING_ADDR 0x3000
 
 __code __at (0x0815) uint16_t keymap[] = KEYMAP_ANSI(
-    R(ESC), FS(0), FS(1), R(F3), FS(2), FS(3), FS(4), FS(5), FR(1), FR(2), FR(3), FR(4), FR(5), 
+    FR(11), FS(0), FS(1), R(F3), FS(2), FS(3), FS(4), FS(5), FR(1), FR(2), FR(3), FR(4), FR(5),
     R(GRV),  R(1), R(2), R(3), R(4), R(5), R(6), FK(7), FK(8), FK(9), FK(10), R(MINS), R(EQL), FR(10) , 
     R(TAB),   R(Q), R(W), R(E), R(R), R(T), R(Y), FK(4), FK(5), FK(6), FK(11), R(LBRC), R(RBRC), R(BSLS),
     R(CAPS),   R(A), R(S), R(D), R(F), R(G), R(H), FK(1), FK(2), FK(3), FK(12), R(QUOT), R(ENT),
@@ -52,7 +52,8 @@ __code uint16_t fns_regular[] = {
     [7] = REG_FN(KC_LEFT, KC_HOME),
     [8] = REG_FN(KC_DOWN, KC_PGDN),
     [9] = REG_FN(KC_RGHT, KC_END),
-    [10] = REG_FN(KC_BSPC, KC_DEL)
+    [10] = REG_FN(KC_BSPC, KC_DEL),
+    [11] = REG_FN(KC_ESC, KC_POWER)
 };
 
 // __code __at (0x0957)
