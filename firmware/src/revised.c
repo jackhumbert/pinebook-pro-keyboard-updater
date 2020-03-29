@@ -112,3 +112,7 @@ ADDR(0x010D) = 0xFF; // DB 0FFh ; serial number
 
 // custom bcdDevice version (0.1)
 ADDR(0x0109)[] = { 0x01, 0x00 }; // DB 00100h ; bcd device version
+
+// Fix the touchpad HID Usage Page
+ADDR(0x01d0)[] = { 0xB3, 0x03 }; // Usage (X) Physical Maximum 947 x 10^-2 cm
+ADDR(0x01da)[] = { 0x6F, 0x02 }; // Usage (Y) Physical Maximum 623 x 10^-2 cm
