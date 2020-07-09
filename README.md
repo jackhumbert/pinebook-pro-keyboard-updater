@@ -11,6 +11,15 @@ sudo apt-get install build-essential libusb-1.0-0-dev xxd
 make
 ```
 
+On Arch/Manjaro:
+
+```bash
+git clone https://github.com/jackhumbert/pinebook-pro-keyboard-updater
+cd pinebook-pro-keyboard-updater
+sudo pacman -Syy base-devel libusb vim
+make
+```
+
 ## Pick right keyboard model
 
 Pinebook Pro offers two keyboard types: `iso` and `ansi`.
