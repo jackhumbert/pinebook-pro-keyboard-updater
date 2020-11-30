@@ -133,7 +133,7 @@ static int step_1()
     return rc;
   }
   
-  printf("[*] Please reboot now, and run `step-2`.\n");
+  printf("[*] Please power your Pinebook Pro off then on again, then run `step-2`.\n");
   
   return 0;
 }
