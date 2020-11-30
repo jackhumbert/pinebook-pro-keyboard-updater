@@ -35,14 +35,14 @@ if at any point process fails, start it from point 1.:
 
 1. Run `step-1 iso` or `step-1 ansi` of update process: `sudo ./updater step-1 iso`,
 1. After `step-1 iso` or `step-1 ansi` touchpad **will not work**, keyboard works as normal (this is true only for **ISO**, the **ANSI** keyboard will not work after `step-1`),
-1. Reboot with `sudo reboot`,
-1. After reboot, run `step-2 iso` or `step-2 ansi` of update process: `sudo ./updater step-2`,
-1. Reboot with `sudo reboot`,
-1. After reboot, your keyboard and touchpad firmware should be updated.
+1. Power your Pinebook Pro off with `sudo poweroff` and then power it on again,
+1. After booting up, run `step-2 iso` or `step-2 ansi` of update process: `sudo ./updater step-2`,
+1. Power your Pinebook Pro off with `sudo poweroff` and then power it on again,
+1. After booting up, your keyboard and touchpad firmware should be updated.
 
 ### Revised firmware
 
-There has been some effort in [`firmware/`](firmware/) to reverse engineer and customise the existing firmware, fixing some of the common issues people are facing. **Currently you need to flash this after steps 1 and 2 with a separate command**, `flash-kb` followed by the `.hex` file location. No reboot is required after flashing, but may be needed if your keyboard/touchpad is unresponsive (currently rare). Source code for each version can be found in [`firmware/src/`](firmware/src/).
+There has been some effort in [`firmware/`](firmware/) to reverse engineer and customise the existing firmware, fixing some of the common issues people are facing. **Currently you need to flash this after steps 1 and 2 with a separate command**, `flash-kb` followed by the `.hex` file location. No power cycling is required after flashing, but may be needed if your keyboard/touchpad is unresponsive (currently rare). Source code for each version can be found in [`firmware/src/`](firmware/src/).
 
 ```bash
 # compile
@@ -54,20 +54,20 @@ make
 # For ISO keyboard
 # step-1
 sudo ./updater step-1 iso
-sudo reboot
+sudo poweroff
 
-# after reboot, step-2
+# Turn your Pinebook Pro on again, then run step-2
 sudo ./updater step-2 iso
-sudo reboot
+sudo poweroff
 
 # For ANSI keyboard
 # step-1
 sudo ./updater step-1 ansi
-sudo reboot
+sudo poweroff
 
-# after reboot, step-2
+# Turn your Pinebook Pro on again, then run step-2
 sudo ./updater step-2 ansi
-sudo reboot
+sudo poweroff
 
 # updating to the revised ansi firmware after steps 1 and 2
 sudo ./updater flash-kb firmware/default_ansi.hex
@@ -121,7 +121,7 @@ Running STEP-1...
 [*] Reseting device?
 [*] Finished succesfully!
 >>> release interface
-[*] Please reboot now, and run `step-2`.
+[*] Please power your Pinebook Pro off then on again, then run `step-2`.
 ```
 
 ### Log from `STEP-2`
