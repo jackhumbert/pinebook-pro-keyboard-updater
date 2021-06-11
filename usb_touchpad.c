@@ -88,7 +88,7 @@ int try_touchpad_verify(int type, int pass, int sendcmd)
     }
 
     if (try == 100) {
-        printf(">>> Touchpad verify (type=%d, pass=%d) data failed\n", type, pass);
+        printf("EEE Touchpad verify data failed type:%d pass:%d\n", type, pass);
         return -1;
     }
 
@@ -102,7 +102,7 @@ int write_tp_fw(const unsigned char *fw, int fw_length)
     int rc;
 
     if (fw_length < 24576) {
-        printf("[*] Touchpad firmware needs to be %d, and is %d\n",
+        printf("EEE Bad touchpad firmware size expected:%d received:%d\n",
             fw_length, 24576);
         return -1;
     }
@@ -110,7 +110,7 @@ int write_tp_fw(const unsigned char *fw, int fw_length)
     // cap to 24k
     fw_length = 24 * 1024;
 
-    printf("[*] Opening in touchpad mode\n");
+    printf("[*] Opening USB device in touchpad mode...\n");
     for (try = 0; try < 3; try++) {
         rc = open_touchpad_mode();
         if (rc >= 0) {
@@ -120,13 +120,13 @@ int write_tp_fw(const unsigned char *fw, int fw_length)
     }
 
     if (try >= 3) {
-        printf(">>> Failed to open in touchpad mode\n");
+        printf("EEE Failed to open in touchpad mode\n");
         goto finish;
     }
 
     rc = try_touchpad_verify(ICERASE, ICERASE_PASS, 0);
     if (rc < 0) {
-        printf(">>> Touchpad erase failed\n");
+        printf("EEE Touchpad erase failed\n");
         goto finish;
     }
 
@@ -159,56 +159,56 @@ int write_tp_fw(const unsigned char *fw, int fw_length)
         *ptr++ = 0xCC;
         *ptr++ = 0xCC;
 
-        printf(">>> Writing offset:%d length:%d...\n", offset, block_size);
+        printf(">>> USB write offset:%d length:%d...\n", offset, block_size);
 
         rc = libusb_control_transfer(devh, 0x21, 0x09, 0x0306, 1, data, sizeof(data), 1000);
         if (rc < 0) {
-            printf(">>> Write failed\n");
+            printf("EEE USB write failed\n");
             goto finish;
         }
         
         usleep(150*1000);
 
-        printf(">>> Verifying '1k-data'...\n");
+        printf(">>> Verifying touchpad '1k-data'...\n");
 
         rc = try_touchpad_verify(VERIFY1KDATA, VERIFY1KDATA_PASS, 1);
         if (rc < 0) {
-            printf(">>> Touchpad verify data failed\n");
+            printf("EEE Touchpad verify '1k-data' failed\n");
             goto finish;
         }
     }
 
     usleep(50*1000);
     
-    printf("[*] Verifying 'end-program'...\n");
+    printf("[*] Verifying touchpad 'end-program'...\n");
 
     rc = try_touchpad_verify(ENDPROGRAM, ENDPROGRAM_PASS, 1);
     if (rc < 0) {
-        printf(">>> Touchpad end program verify\n");
+        printf("EEE Touchpad verify 'end-program' failed\n");
         goto finish;
     }
 
     usleep(50*1000);
 
-    printf("[*] Verifying 'checksum'...\n");
+    printf("[*] Verifying touchpad 'checksum'...\n");
 
     rc = try_touchpad_verify(VERIFY_CHECKSUM, VERIFY_CHECKSUM_PASS, 1);
     if (rc < 0) {
-        printf(">>> Touchpad end program verify\n");
+        printf("EEE Touchpad verify 'checksum' failed\n");
         goto finish;
     }
 
     usleep(50*1000);
 
-    printf("[*] Verifying 'program'...\n");
+    printf("[*] Verifying touchpad 'program'...\n");
     
     rc = try_touchpad_verify(PROGRAMPASS, 0, 1);
     if (rc < 0) {
-        printf(">>> Touchpad end program verify\n");
+        printf("EEE Touchpad verify 'program' failed\n");
         goto finish;
     }
 
-    printf("[*] Finished succesfully!\n");
+    printf("[*] Touchpad update completed successfully\n");
 
 finish:
     close_usb();

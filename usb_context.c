@@ -13,13 +13,13 @@ int open_usb(int vid, int pid, int indf)
   printf(">>> Trying to open VID:%04x PID:%04x...\n", vid&0xffff, pid&0xffff);
   devh = libusb_open_device_with_vid_pid(ctx, vid, pid);
   if(devh == NULL) {
-    printf(">>> Device not found\n");
+    printf(">>> USB device not found\n");
     return -1;
   }
 
   rc = libusb_kernel_driver_active(devh, indf);
   if (rc > 0) {
-    printf(">>> Kernel Driver Active\n");
+    printf(">>> Kernel driver active\n");
     rc = libusb_detach_kernel_driver(devh, indf);
     if (rc < 0) {
       printf(">>> libusb_detach_kernel_driver: %d\n", rc);
@@ -43,7 +43,7 @@ finish:
 void close_usb()
 {
   if (devh) {
-    printf(">>> release interface\r\n");
+    printf(">>> USB device closed\n");
     libusb_release_interface(devh, devintf);
     libusb_close(devh);
     libusb_exit(ctx);
@@ -83,7 +83,7 @@ int switch_to_boot_mode()
 {
   int rc, try;
 
-  printf("[*] Opening in user mode...\n");
+  printf("[*] Opening USB device in user mode...\n");
   for (try = 0; try < 3; try++) {
     rc = open_user_mode();
     if (rc >= 0) {
@@ -93,7 +93,7 @@ int switch_to_boot_mode()
   }
 
   if (try == 3) {
-    printf(">>> Failed to open in user mode\n");
+    printf("EEE Failed to open in user mode\n");
     goto finish;
   }
 
@@ -105,11 +105,11 @@ int switch_to_boot_mode()
   rc = libusb_control_transfer(devh, 0x21, 0x09, 0x0305, 1,
     dataOut, sizeof(dataOut), 1000);
   if (rc < 0) {
-    printf("failed to send switch command\n");
+    printf("EEE Failed to send switch command\n");
     goto finish;
   }
 
-  printf("[*] Command send\n");
+  printf(">>> Switch command sent\n");
 
 finish:
   close_usb();

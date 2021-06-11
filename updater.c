@@ -125,7 +125,7 @@ static int step_1()
 {
   int rc;
 
-  printf("Running STEP-1...\n");
+  printf("[x] Running STEP-1...\n");
 
   printf("[*] Flashing keyboard updater firmware...\n");
   rc = flash_tp_update();
@@ -133,8 +133,7 @@ static int step_1()
     return rc;
   }
   
-  printf("[*] Please power your Pinebook Pro off then on again, then run `step-2`.\n");
-  
+  printf("[x] Power cycle your Pinebook Pro, then run 'step-2'.\n");
   return 0;
 }
 
@@ -142,7 +141,7 @@ static int step_2(int ansi_type)
 {
   int rc;
 
-  printf("Running STEP-2...\n");
+  printf("[x] Running STEP-2...\n");
 
   printf("[*] Flashing touchpad firmware...\n");
   rc = flash_tp();
@@ -161,8 +160,7 @@ static int step_2(int ansi_type)
     return rc;
   }
 
-  printf("[*] All done! Your keyboard and touchpad should be updated.\n");
-
+  printf("[x] All done, keyboard and touchpad should be updated\n");
   return 0;
 }
 

@@ -63,7 +63,7 @@ static int read_hexdata(const unsigned char *data, int data_length, unsigned cha
 
   if (output[1] == 0x38 && output[2] == 0x00)
   {
-    printf(">>> Fix hex file\n");
+    printf(">>> Hex file data fixed\n");
     output[0] = pbuffer[0x37FB];
     output[1] = pbuffer[0x37FC];
     output[2] = pbuffer[0x37FD];
@@ -106,7 +106,7 @@ int write_serial_number(unsigned char sensor_direct, unsigned short serial_numbe
     vid = (data[2] << 8) | data[3];
     pid = (data[4] << 8) | data[5];
 
-    printf("Did read VID:%04x PID:%04x\n", vid & 0xFFFF, pid & 0xFFFF);
+    printf(">>> Done read VID:%04x PID:%04x\n", vid & 0xFFFF, pid & 0xFFFF);
 
     // again?
     rc = libusb_control_transfer(devh, 0xA1, 0x01, 0x0305, 0, data, sizeof(data), 100);
@@ -181,20 +181,20 @@ int convert_hex_data(const unsigned char *data, int data_length, const char *out
 
   hex_file_length = read_hexdata(data, data_length, hex_file);
   if (hex_file_length <= 0) {
-    printf(">>> Failed to read: %d\n", data_length);
+    printf("EEE Failed to read hex file data length:%d\n", data_length);
     return -1;
   }
 
   printf("[*] Writing %s\n", output_filename);
   FILE *fp = fopen(output_filename, "wb");
   if (!fp) {
-    printf(">>> Failed to write: %s\n", output_filename);
+    printf("EEE Failed to write hex file name:%s\n", output_filename);
     return -1;
   }
 
   int rc = fwrite(hex_file, 1, hex_file_length, fp);
   if (rc != hex_file_length) {
-    printf(">>> Failed to write all data: %d != %d\n", rc, hex_file_length);
+    printf("EEE Failed to write hex file data written:%d length:%d\n", rc, hex_file_length);
     fclose(fp);
     return -1;
   }
@@ -213,13 +213,13 @@ int write_kb_fw(const unsigned char *data, int data_length)
 
   hex_file_length = read_hexdata(data, data_length, hex_file);
   if (hex_file_length <= 0) {
-    printf(">>> Failed to read: %d\n", data_length);
+    printf("EEE Failed to read hex file data length:%d\n", data_length);
     return -1;
   }
 
   switch_to_boot_mode();
 
-  printf("[*] Opening in boot mode\n");
+  printf("[*] Opening USB device in boot mode...\n");
   for (try = 0; try < 20; try++) {
     rc = open_boot_mode();
     if (rc >= 0) {
@@ -229,7 +229,7 @@ int write_kb_fw(const unsigned char *data, int data_length)
   }
 
   if (try == 20) {
-    printf(">>> Failed to open in boot mode\n");
+    printf("EEE Failed to open in boot mode\n");
     goto finish;
   }
 
@@ -242,7 +242,7 @@ int write_kb_fw(const unsigned char *data, int data_length)
   rc = libusb_control_transfer(devh, 0x21, 0x09, 0x0305, 0,
     reportData, sizeof(reportData), 100);
   if (rc < 0) {
-    printf("failed to erase flash\n");
+    printf("EEE Failed to erase flash\n");
     goto finish;
   }
 
@@ -258,7 +258,7 @@ int write_kb_fw(const unsigned char *data, int data_length)
   }
 
   if (try == 5) {
-    printf("too many tries\n");
+    printf("EEE Failed to write, too many retries\n");
     rc = -1;
     goto finish;
   }
@@ -273,19 +273,19 @@ int write_kb_fw(const unsigned char *data, int data_length)
   }
 
   if (try == 5) {
-    printf("too many tries\n");
+    printf("EEE Failed to read, too many retries\n");
     rc = -1;
     goto finish;
   }
 
-  printf("[*] Comparing firmwares...\n");
+  printf("[*] Comparing firmware images...\n");
   if (memcmp(hex_file, read_hex_file, 0x37fb)) {
-    printf("FATAL ERROR FW does differ\n");
+    printf("EEE Write failed, firmware images mismatch\n");
     for (int i = 0; i < hex_file_length; i++) {
       if (hex_file[i] == read_hex_file[i]) {
         continue;
       }
-      printf(">>> 0x%04x] %02x != %02x\n", i, hex_file[i], read_hex_file[i]);
+      printf(">>> [0x%04x] %02x != %02x\n", i, hex_file[i], read_hex_file[i]);
     }
     rc = -1;
     goto finish;
@@ -299,11 +299,13 @@ int write_kb_fw(const unsigned char *data, int data_length)
   }
 #endif
 
-  printf("[*] Reseting device?\n");
+  printf("[*] Resetting device...\n");
   reset_device();
 
-  printf("[*] Finished succesfully!\n");
+  printf("[*] Keyboard update completed successfully\n");
+
 finish:
   close_usb();
   return rc;
 }
+

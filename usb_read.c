@@ -4,7 +4,7 @@ static int read_block_start(int length)
 {
   unsigned char transfer[6];
 
-  printf(">>> USB: read_block_start (length=%d)\n", length);
+  printf(">>> USB read_block_start length:%d\n", length);
 
   transfer[0] = 0x05;//report id
   transfer[1] = 0x52;
@@ -21,7 +21,7 @@ static int read_block(unsigned char *data, int offset, int length)
 {
   unsigned char transfer[length + 2];
 
-  printf(">>> USB: read_block (offset=%d, length=%d)\n", offset, length);
+  printf(">>> USB read_block offset:%d length:%d\n", offset, length);
 
   transfer[0] = 0x06;//report id
   transfer[1] = 0x72;
